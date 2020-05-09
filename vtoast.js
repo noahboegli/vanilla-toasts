@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Vanilla Toasts (vtoasts) 0.3.0alpha - Copyright (c) 2020 Noah Boegli
+ * Vanilla Toasts (vtoasts) 0.5.0alpha - Copyright (c) 2020 Noah Boegli
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,18 @@
 class vtoast {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Core functions
+    // Public functions
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Shows a toast. To see possible combination of parameters, see the documentation.
+     * Shows a toast, handles the multiple arguments combination. To see more about the possible combination, see
+     * [the documentation](https://github.com/paper-development/vanilla-toasts).
      */
-    static show() {
-
+    static show(){
         /*********** <Parsing arguments> ***********/
         let args;
         try {
-            args = vtoast.parseArgs(arguments);
+            args = vtoast._parseArgs(arguments);
         } catch (exception) {
             throw exception;
         }
@@ -45,6 +45,27 @@ class vtoast {
         let options = args["options"];
         /*********** </Parsing arguments> ***********/
 
+        /*********** <Showing the toast> ***********/
+        try {
+            vtoast._show(title, content, options)
+        } catch (exception) {
+            throw exception;
+        }
+        /*********** </Showing the toast> ***********/
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Shows a toast.
+     * @param title
+     * @param content
+     * @param options
+     * @private
+     */
+    static _show(title, content, options) {
 
         /*********** <DOM Elements creation> ***********/
         let toastElement = document.createElement("div");
@@ -74,6 +95,7 @@ class vtoast {
         }
 
         toastElement.classList.add("vtoast", "hidden");
+        toastElement.style.opacity = options["opacity"];
 
         document.documentElement.append(toastElement);
         /*********** </DOM Elements creation> ***********/
@@ -128,7 +150,7 @@ class vtoast {
         /*********** <Auto-remove> ***********/
         // Adding a timeout to automatically remove the toast after the given delay
         toastElement.autoRemove = setTimeout(function () {
-            vtoast.removeToast(toastElement);
+            vtoast._removeToast(toastElement);
         }, options["duration"]);
 
 
@@ -139,7 +161,7 @@ class vtoast {
 
 
             // Stopping the progress bar width animation by setting the width to the current width
-            if (toastElement.hasOwnProperty("progressbarType"))
+            if (toastElement.progressbarType !== "hidden")
                 progressbarElement.style.width = progressbarElement.clientWidth + "px";
 
         });
@@ -148,21 +170,21 @@ class vtoast {
         toastElement.addEventListener("mouseleave", function () {
 
             //Resetting width and adapting transition duration
-            if (toastElement.hasOwnProperty("progressbarType")){
+            if (toastElement.progressbarType !== "hidden"){
                 progressbarElement.style.transition = "width " + (options["unfocus-duration"] / 1000) + "s linear";
                 progressbarElement.style.width = "0";
             }
 
             //Setting a timeout to remove the toast after the delay is over.
             toastElement.autoRemove = setTimeout(function () {
-                vtoast.removeToast(toastElement);
+                vtoast._removeToast(toastElement);
             }, options["unfocus-duration"]);
         });
         /*********** </Auto-remove> ***********/
 
 
         /*********** <Progressbar animation> ***********/
-        if (toastElement.hasOwnProperty("progressbarType")) {
+        if (toastElement.progressbarType !== "hidden") {
             if (toastElement.progressbarType === "top") {
                 window.requestAnimationFrame(function () {
                     toastElement.children[0].style.transition = "width " + (options["duration"] / 1000) + "s linear";
@@ -197,7 +219,6 @@ class vtoast {
 
         /*********** <Finishing> ***********/
         //Showing the toast
-        toastElement.classList.add("shown");
         toastElement.classList.remove("hidden");
 
 
@@ -208,10 +229,11 @@ class vtoast {
 
     /**
      * Parses the arguments for the show method.
-     * @param args the argument array
-     * @returns an object containing the content, title and options with the keys in the previously given order.
+     * @param args The argument array
+     * @returns An object containing the content, title and options with the keys in the previously given order.
+     * @private
      */
-    static parseArgs(args) {
+    static _parseArgs(args) {
         /*********** <Default values> ***********/
         let title = "";
         let content = "";
@@ -241,9 +263,13 @@ class vtoast {
         };
     }
 
-    static removeToast(toast) {
+    /**
+     * Removes a toast.
+     * @param toast The toast to remove.
+     * @private
+     */
+    static _removeToast(toast) {
         toast.classList.add("hidden");
-        toast.classList.remove("shown");
 
         setTimeout(function () {
             toast.remove();
@@ -274,5 +300,6 @@ vtoast.options = {
     "unfocus-duration": 1000,
     "position": "top-right",
     "show-close": false,
-    "progress": "hidden"
+    "progress": "hidden",
+    "opacity": "1"
 };

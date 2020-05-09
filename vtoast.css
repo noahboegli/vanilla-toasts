@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Vanilla Toasts (vtoasts) 0.3.0alpha - Copyright (c) 2020 Noah Boegli
+ * Vanilla Toasts (vtoasts) 0.5.0alpha - Copyright (c) 2020 Noah Boegli
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,13 +29,9 @@
     font-size: 0.9em;
     transition: opacity 0.7s, top 0.5s,  bottom 0.5s;
 }
-.vtoast.shown{
-    opacity: 1;
-    transition: opacity 0.7s, top 0.5s,  bottom 0.5s;
-}
 
 .vtoast.hidden{
-    opacity: 0;
+    opacity: 0!important;
     transition: opacity 0.7s, top 0.5s,  bottom 0.5s;
 }
 .vtoast > .content > .title{
