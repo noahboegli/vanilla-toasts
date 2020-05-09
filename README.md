@@ -1,8 +1,10 @@
 Vanilla Toasts (also refered to as vtoasts) is a lightweight VanillaJS toast library. It does not require any framework to run. It is inspired from [toastr](https://github.com/CodeSeven/toastr) but removes the dependency to jQuery. 
 
+It's also lighter and has fewer lines of code.
+
 It is currently in active development thus some features mentioned below might not be (yet) implemented. Additional features may also be developed.
 
-Current version: 0.5.0alpha
+Current version: 0.6.0alpha
 
 Known issues with the current code:
 - None
@@ -48,5 +50,5 @@ Options are passed to the `show` method as a "one depth" JSON object.
 |unfocus-duration|1000|The time (in ms) that the toast will remain visible after it as been unfocused|
 |position|`top-right`|The position of the toast. Any combination of `top\|middle\|bottom`-`left\|centre\|right`|
 |show-close|false|Whether or not to show a close icon on the toast. true or false.|
-|progress|`hidden`|The position of the progress bar in the toast. Either `hidden`, `top` or `bottom`. Performance note: when using `hidden`, the progress bar is disabled and the code is not included (It's not simply "hidden" through CSS).|
+|progressbar|`hidden`|The position of the progress bar in the toast. Either `hidden`, `top` or `bottom`. Performance note: when using `hidden`, the progress bar is disabled and the code is not included (It's not simply "hidden" through CSS).|
 |opacity|1|The opacity of the toast. Any decimal number between 0 and 1.|

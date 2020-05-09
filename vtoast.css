@@ -1,7 +1,9 @@
 /*
  * MIT License
  *
- * Vanilla Toasts (vtoasts) 0.5.0alpha - Copyright (c) 2020 Noah Boegli
+ * Vanilla Toasts (vtoasts) 0.6.0alpha - Copyright (c) 2020
+ * Authors: Noah Boegli
+ * All rights reserved
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +28,7 @@
     box-sizing: border-box;
     border-radius: 5px;
     font-family: sans-serif;
-    font-size: 0.9em;
+    font-size: 0.8em;
     transition: opacity 0.7s, top 0.5s,  bottom 0.5s;
 }
 
@@ -37,7 +39,7 @@
 .vtoast > .content > .title{
     display: block;
     width: 100%;
-    font-size: 1.4em;
+    font-size: 1.3em;
     margin-bottom: 5px;
 }
 
@@ -45,7 +47,7 @@
     padding: 10px 20px 12px 20px;
 }
 
-.vtoast > .progress{
+.vtoast > .progressbar{
     width: 100%;
     height: 5px;
     background-color: #00000050;

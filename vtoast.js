@@ -1,7 +1,9 @@
 /*
  * MIT License
  *
- * Vanilla Toasts (vtoasts) 0.5.0alpha - Copyright (c) 2020 Noah Boegli
+ * Vanilla Toasts (vtoasts) 0.6.0alpha - Copyright (c) 2020
+ * Authors: Noah Boegli
+ * All rights reserved
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +33,7 @@ class vtoast {
      * Shows a toast, handles the multiple arguments combination. To see more about the possible combination, see
      * [the documentation](https://github.com/paper-development/vanilla-toasts).
      */
-    static show(){
+    static show() {
         /*********** <Parsing arguments> ***********/
         let args;
         try {
@@ -60,171 +62,174 @@ class vtoast {
 
     /**
      * Shows a toast.
-     * @param title
-     * @param content
-     * @param options
+     * @param title The toast title
+     * @param text The toast text
+     * @param options The toast options
      * @private
      */
-    static _show(title, content, options) {
+    static _show(title, text, options) {
 
         /*********** <DOM Elements creation> ***********/
-        let toastElement = document.createElement("div");
-
-        let progressbarElement;
-        switch (options["progress"]) {
-            case "top":
-            case "bottom":
-                progressbarElement = document.createElement("div");
-                progressbarElement.classList.add("progress");
-                break;
-            case "hidden":
-                break;
-            default:
-                throw "vtoast: error, incorrect value " + options["progress"] + " given for progress bar type.";
-        }
-        toastElement.progressbarType = options["progress"];
-
-        if (options["progress"] === "top") {
-            toastElement.append(progressbarElement);
-        }
-
-        toastElement.innerHTML += `<div class="content"> <span class="title">${title}</span> ${content}</div>`;
-
-        if (options["progress"] === "bottom") {
-            toastElement.append(progressbarElement);
-        }
-
-        toastElement.classList.add("vtoast", "hidden");
-        toastElement.style.opacity = options["opacity"];
-
-        document.documentElement.append(toastElement);
+        let toast = vtoast._createToastElement(title, text, options)
+        document.documentElement.append(toast);
         /*********** </DOM Elements creation> ***********/
 
-
-        /*********** <Styling> ***********/
-            //Positioning the element
+        /*********** <Positioning> ***********/
         let position = options["position"].split("-");
         let vPosition = position[0];
         let hPosition = position[1];
 
         switch (vPosition) {
             case "top":
-                toastElement.style.top = "0";
+                toast.style.top = "0";
                 break;
             case "middle":
-                toastElement.style.top = "calc(50vh - (" + toastElement.offsetHeight + "px / 2) - " + options["margin"] + "px)";
+                toast.style.top = "calc(50vh - (" + toast.offsetHeight + "px / 2) - " + options["margin"] + "px)";
                 break;
             case "bottom":
-                toastElement.style.bottom = "0";
+                toast.style.bottom = "0";
                 break;
             default:
-                console.log("vtoast: error, unknown vertical position attribute " + vPosition + ".");
-                return;
+                throw "vtoast: error, unknown vertical position attribute " + vPosition + ".";
         }
 
         switch (hPosition) {
             case "left":
-                toastElement.style.left = "0";
+                toast.style.left = "0";
                 break;
             case "centre":
-                toastElement.style.left = "calc(50vw - (" + options["width"] + "px / 2) - " + options["margin"] + "px)";
+                toast.style.left = "calc(50vw - (" + options["width"] + "px / 2) - " + options["margin"] + "px)";
                 break;
             case "right":
-                toastElement.style.right = "0";
+                toast.style.right = "0";
                 break;
             default:
-                console.log("vtoast: error, unknown horizontal position attribute " + hPosition + ".");
-                return;
+                throw "vtoast: error, unknown horizontal position attribute " + hPosition + ".";
         }
+        toast.style.width = options["width"] + "px";
+        toast.style.margin = options["margin"] + "px";
+        /*********** </Positioning> ***********/
 
-        // Width, margin
-        toastElement.style.width = options["width"] + "px";
-        toastElement.style.margin = options["margin"] + "px";
-
-        //Adding colors
-        toastElement.style.color = options["color"];
-        toastElement.style.backgroundColor = options["background-color"];
-        /*********** </Styling> ***********/
-
+        /*********** <Appearance> ***********/
+        toast.style.color = options["color"];
+        toast.style.backgroundColor = options["background-color"];
+        toast.style.opacity = options["opacity"];
+        /*********** </Appearance> ***********/
 
         /*********** <Auto-remove> ***********/
-        // Adding a timeout to automatically remove the toast after the given delay
-        toastElement.autoRemove = setTimeout(function () {
-            vtoast._removeToast(toastElement);
-        }, options["duration"]);
-
+        vtoast._remove(toast, options["duration"]);
 
         // Mouse enter event, we must stop the auto-remove process
-        toastElement.addEventListener("mouseenter", function () {
-            //Clearing the timeout on the toast
-            clearTimeout(toastElement.autoRemove);
+        toast.addEventListener("mouseenter", function () {
 
+            //Clearing the timeout on the toast
+            vtoast._cancelRemove(toast);
 
             // Stopping the progress bar width animation by setting the width to the current width
-            if (toastElement.progressbarType !== "hidden")
-                progressbarElement.style.width = progressbarElement.clientWidth + "px";
-
+            if (toast.progressbarType !== "hidden")
+                toast.progressbarElement.style.width = toast.progressbarElement.clientWidth + "px";
         });
 
         // Mouse leave event, we must restart the auto-remove process
-        toastElement.addEventListener("mouseleave", function () {
+        toast.addEventListener("mouseleave", function () {
 
             //Resetting width and adapting transition duration
-            if (toastElement.progressbarType !== "hidden"){
-                progressbarElement.style.transition = "width " + (options["unfocus-duration"] / 1000) + "s linear";
-                progressbarElement.style.width = "0";
+            if (toast.progressbarType !== "hidden") {
+                window.requestAnimationFrame(function () {
+                    toast.progressbarElement.style.transition = "width " + (options["unfocus-duration"] / 1000) + "s linear";
+                    toast.progressbarElement.style.width = "0";
+                });
             }
 
             //Setting a timeout to remove the toast after the delay is over.
-            toastElement.autoRemove = setTimeout(function () {
-                vtoast._removeToast(toastElement);
-            }, options["unfocus-duration"]);
+            vtoast._remove(toast, options["unfocus-duration"]);
         });
         /*********** </Auto-remove> ***********/
 
-
         /*********** <Progressbar animation> ***********/
-        if (toastElement.progressbarType !== "hidden") {
-            if (toastElement.progressbarType === "top") {
-                window.requestAnimationFrame(function () {
-                    toastElement.children[0].style.transition = "width " + (options["duration"] / 1000) + "s linear";
-                    toastElement.children[0].style.width = "0";
-                });
-            } else if (toastElement.progressbarType === "bottom") {
-                let toastChildren = toastElement.children;
-                window.requestAnimationFrame(function () {
-                    toastChildren[toastChildren.length - 1].style.transition = "width " + (options["duration"] / 1000) + "s linear";
-                    toastChildren[toastChildren.length - 1].style.width = "0";
-                });
-            }
+        if (toast.progressbarType !== "hidden") {
+            window.requestAnimationFrame(function () {
+                toast.progressbarElement.style.transition = "width " + (options["duration"] / 1000) + "s linear";
+                toast.progressbarElement.style.width = "0";
+            });
         }
         /*********** </Progressbar animation> ***********/
-
 
         /*********** <Moving other toasts out of the way> ***********/
         for (let toast of vtoast.toasts[vPosition + "-" + hPosition]) {
             if (vPosition === "top") {
                 let currentTop = toast.style.top;
-                toast.style.top = (Number(currentTop.substring(0, currentTop.length - 2)) + toastElement.offsetHeight + options["margin"]) + "px";
+                toast.style.top = (Number(currentTop.substring(0, currentTop.length - 2)) + toast.offsetHeight + options["margin"]) + "px";
             } else if (vPosition === "middle") {
                 let currentTop = toast.style.top;
-                toast.style.top = currentTop.substring(0, currentTop.length - 1) + " + " + (toastElement.offsetHeight + options["margin"]) + "px)";
+                toast.style.top = currentTop.substring(0, currentTop.length - 1) + " + " + (toast.offsetHeight + options["margin"]) + "px)";
             } else if (vPosition === "bottom") {
                 let currentBottom = toast.style.bottom;
-                toast.style.bottom = (Number(currentBottom.substring(0, currentBottom.length - 2)) + toastElement.offsetHeight + options["margin"]) + "px";
+                toast.style.bottom = (Number(currentBottom.substring(0, currentBottom.length - 2)) + toast.offsetHeight + options["margin"]) + "px";
             }
         }
         /*********** </Moving other toasts out of the way> ***********/
 
-
         /*********** <Finishing> ***********/
         //Showing the toast
-        toastElement.classList.remove("hidden");
-
+        window.requestAnimationFrame(function () {
+            toast.classList.remove("hidden");
+        });
 
         //Adding the toast in the toast list
-        vtoast.toasts[vPosition + "-" + hPosition].push(toastElement);
+        vtoast.toasts[vPosition + "-" + hPosition].push(toast);
         /*********** </Finishing> ***********/
+    }
+
+    /**
+     * Creates a toast DOM element ready to be used.
+     * What is done, in details: Elements hierarchy creation, classes addition, progressbar & close button.
+     * What is **not** done: All options, except for the close button and the progressbar.
+     * @param title The toast title
+     * @param text The toast text
+     * @param options The toast options
+     * @returns {HTMLDivElement}
+     * @private
+     */
+    static _createToastElement(title, text, options) {
+
+        let toastContainer = document.createElement("div");
+        let contentContainer = document.createElement("div")
+        let titleContainer = document.createElement("span");
+
+        if (options["show-close"]) {
+            let closeButtonElement = document.createElement("i");
+            closeButtonElement.classList.add("close-button");
+            toastContainer.closeButtonElement = closeButtonElement;
+        }
+
+        if (options["progressbar"] !== "hidden") {
+            let progressBarElement = document.createElement("div");
+            progressBarElement.classList.add("progressbar");
+            toastContainer.progressbarElement = progressBarElement;
+            toastContainer.progressbarType = options["progressbar"];
+        }
+
+        toastContainer.classList.add("vtoast", "hidden");
+        contentContainer.classList.add("content");
+        titleContainer.classList.add("title");
+
+        if (options["show-close"])
+            toastContainer.append(toastContainer.closeButtonElement);
+
+        if (options["progressbar"] === "top")
+            toastContainer.append(toastContainer.progressbarElement);
+
+        titleContainer.innerHTML = title;
+        contentContainer.append(titleContainer);
+        contentContainer.innerHTML += text;
+
+        toastContainer.append(contentContainer);
+
+        if (options["progressbar"] === "bottom")
+            toastContainer.append(toastContainer.progressbarElement);
+
+        return toastContainer;
     }
 
     /**
@@ -266,31 +271,37 @@ class vtoast {
     /**
      * Removes a toast.
      * @param toast The toast to remove.
+     * @param delay The delay (in ms) before the removal.
      * @private
      */
-    static _removeToast(toast) {
-        toast.classList.add("hidden");
+    static _remove(toast, delay) {
+        toast.removeTimeout = setTimeout(function () {
+            toast.classList.add("hidden");
 
-        setTimeout(function () {
-            toast.remove();
-        }, 700);
+            setTimeout(function () {
+                toast.remove();
+            }, 700);
+        }, delay);
+    }
+
+    /**
+     * Cancels a toast removal.
+     * @param toast The toast to cancel the removal on.
+     * @private
+     */
+    static _cancelRemove(toast) {
+        clearTimeout(toast.removeTimeout);
     }
 }
 
-let placeHolder = document.createElement("i");
-
+// This property holds all the toasts
 vtoast.toasts = {
-    "top-left": [placeHolder],
-    "top-centre": [placeHolder],
-    "top-right": [placeHolder],
-    "middle-left": [placeHolder],
-    "middle-centre": [placeHolder],
-    "middle-right": [placeHolder],
-    "bottom-left": [placeHolder],
-    "bottom-centre": [placeHolder],
-    "bottom-right": [placeHolder],
+    "top-left": [], "top-centre": [], "top-right": [],
+    "middle-left": [], "middle-centre": [], "middle-right": [],
+    "bottom-left": [], "bottom-centre": [], "bottom-right": [],
 };
 
+// Default options
 vtoast.options = {
     "width": 350,
     "margin": 10,
@@ -300,6 +311,6 @@ vtoast.options = {
     "unfocus-duration": 1000,
     "position": "top-right",
     "show-close": false,
-    "progress": "hidden",
+    "progressbar": "hidden",
     "opacity": "1"
 };
