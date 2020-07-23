@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Vanilla Toasts (vtoasts) 0.6.0alpha - Copyright (c) 2020
+ * Vanilla Toasts (vtoasts) 0.6.1alpha - Copyright (c) 2020
  * Authors: Noah Boegli
  * All rights reserved
  *
@@ -26,10 +26,15 @@
 .vtoast {
     position: fixed;
     box-sizing: border-box;
-    border-radius: 5px;
+    border-radius: 3px;
     font-family: sans-serif;
     font-size: 0.8em;
     transition: opacity 0.7s, top 0.5s,  bottom 0.5s;
+}
+
+.vtoast:hover{
+    opacity: 1!important;
+    cursor: pointer;
 }
 
 .vtoast.hidden{
