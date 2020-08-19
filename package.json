@@ -1,0 +1,24 @@
+{
+  "name": "@paper-development/vtoast",
+  "version": "1.0.0",
+  "description": "A vanilla JavaScript toast library",
+  "main": "vtoast.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paper-development/vanilla-toasts.git"
+  },
+  "keywords": [
+    "js",
+    "toast",
+    "notification"
+  ],
+  "author": "Paper Development - Noah Boegli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paper-development/vanilla-toasts/issues"
+  },
+  "homepage": "https://github.com/paper-development/vanilla-toasts#readme"
+}

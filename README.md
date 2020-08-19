@@ -1,10 +1,10 @@
-Vanilla Toasts (also refered to as vtoasts) is a lightweight VanillaJS toast library. It does not require any framework to run. It is inspired from [toastr](https://github.com/CodeSeven/toastr) but removes the dependency to jQuery. 
+Vanilla Toasts (also refered to as vtoast) is a lightweight VanillaJS toast library. It does not require any framework to run. It is inspired from [toastr](https://github.com/CodeSeven/toastr) but removes the dependency to jQuery. 
 
 It's also lighter and has fewer lines of code.
 
 It is currently in active development thus some features mentioned below might not be (yet) implemented. Additional features may also be developed.
 
-Current version: 0.6.0alpha
+Current version: 1.0.0
 
 Known issues with the current code:
 - None
@@ -14,6 +14,13 @@ A toast has 3 states
 - Shown: The toast is visible for the time set in the `duration` option.
 - Focused: The toast is frozen in time (the auto-remove is cancelled). Happens when the cursor enters the toast. Once the cursor leaves the toast, the toast will remain in a "shown" state for the time set in the `unfocus-duration` option.
 ## Usage
+To start with, include the CSS and the JavaScript (where PATH is the installation path or URL)
+```html
+<link rel="stylesheet" href="PATH/vtoast.css">
+<script src="PATH/vtoast.js"></script>
+```
+And you are ready to bring quality toasts to your website.  
+
 Consider the 3 variables below:
 ```javascript
 let title;
@@ -45,10 +52,10 @@ Options are passed to the `show` method as a "one depth" JSON object.
 |width|350|Defines the width (in px) of the toast. Any Number|
 |margin|10|Defines the margin (in px) around the toast. Any Number|
 |color|#004085 (bootstrap's primary)|Defines the font color of the toast. Any hex value|
-|background-color|#CCE5FF (bootstrap's primary)|Defines the background color of the toast. Any hex value|
+|backgroundcolor|#CCE5FF (bootstrap's primary)|Defines the background color of the toast. Any hex value|
 |duration|5000|The time (in ms) during which the toast will be visible. Any number|
-|unfocus-duration|1000|The time (in ms) that the toast will remain visible after it as been unfocused|
+|unfocusduration|1000|The time (in ms) that the toast will remain visible after it as been unfocused|
 |position|`top-right`|The position of the toast. Any combination of `top\|middle\|bottom`-`left\|centre\|right`|
-|show-close|false|Whether or not to show a close icon on the toast. true or false.|
+|showclose|false|Whether or not to show a close icon on the toast. true or false.|
 |progressbar|`hidden`|The position of the progress bar in the toast. Either `hidden`, `top` or `bottom`. Performance note: when using `hidden`, the progress bar is disabled and the code is not included (It's not simply "hidden" through CSS).|
 |opacity|1|The opacity of the toast. Any decimal number between 0 and 1.|

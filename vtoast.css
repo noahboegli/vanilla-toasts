@@ -1,8 +1,8 @@
 /*
  * MIT License
  *
- * Vanilla Toasts (vtoasts) 0.6.1alpha - Copyright (c) 2020
- * Authors: Noah Boegli
+ * Vanilla Toasts (vtoast) 1.0.0 - Copyright (c) 2020
+ * Authors: Paper Development - Noah Boegli
  * All rights reserved
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,6 +30,7 @@
     font-family: sans-serif;
     font-size: 0.8em;
     transition: opacity 0.7s, top 0.5s,  bottom 0.5s;
+	z-index: 10000;
 }
 
 .vtoast:hover{

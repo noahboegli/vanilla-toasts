@@ -1,8 +1,8 @@
 /*
  * MIT License
  *
- * Vanilla Toasts (vtoasts) 0.6.0alpha - Copyright (c) 2020
- * Authors: Noah Boegli
+ * Vanilla Toasts (vtoast) 1.0.0 - Copyright (c) 2020
+ * Authors: Paper Development - Noah Boegli
  * All rights reserved
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -112,7 +112,7 @@ class vtoast {
 
         /*********** <Appearance> ***********/
         toast.style.color = options["color"];
-        toast.style.backgroundColor = options["background-color"];
+        toast.style.backgroundColor = options["backgroundcolor"];
         toast.style.opacity = options["opacity"];
         /*********** </Appearance> ***********/
 
@@ -136,13 +136,13 @@ class vtoast {
             //Resetting width and adapting transition duration
             if (toast.progressbarType !== "hidden") {
                 window.requestAnimationFrame(function () {
-                    toast.progressbarElement.style.transition = "width " + (options["unfocus-duration"] / 1000) + "s linear";
+                    toast.progressbarElement.style.transition = "width " + (options["unfocusduration"] / 1000) + "s linear";
                     toast.progressbarElement.style.width = "0";
                 });
             }
 
             //Setting a timeout to remove the toast after the delay is over.
-            vtoast._remove(toast, options["unfocus-duration"]);
+            vtoast._remove(toast, options["unfocusduration"]);
         });
         /*********** </Auto-remove> ***********/
 
@@ -197,7 +197,7 @@ class vtoast {
         let contentContainer = document.createElement("div")
         let titleContainer = document.createElement("span");
 
-        if (options["show-close"]) {
+        if (options["showclose"]) {
             let closeButtonElement = document.createElement("i");
             closeButtonElement.classList.add("close-button");
             toastContainer.closeButtonElement = closeButtonElement;
@@ -214,7 +214,7 @@ class vtoast {
         contentContainer.classList.add("content");
         titleContainer.classList.add("title");
 
-        if (options["show-close"])
+        if (options["showclose"])
             toastContainer.append(toastContainer.closeButtonElement);
 
         if (options["progressbar"] === "top")
@@ -306,11 +306,11 @@ vtoast.options = {
     "width": 350,
     "margin": 10,
     "color": "#FFFFFF",
-    "background-color": "#007BFF",
+    "backgroundcolor": "#007BFF",
     "duration": 5000,
-    "unfocus-duration": 1000,
+    "unfocusduration": 1000,
     "position": "top-right",
-    "show-close": false,
+    "showclose": false,
     "progressbar": "hidden",
     "opacity": "1"
 };
